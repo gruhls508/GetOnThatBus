@@ -23,7 +23,6 @@
 		0047027F199154B8003A0DBC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0047027D199154B8003A0DBC /* InfoPlist.strings */; };
 		00470281199154B8003A0DBC /* GetOnThatBusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00470280199154B8003A0DBC /* GetOnThatBusTests.m */; };
 		0047028B199156C5003A0DBC /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0047028A199156C5003A0DBC /* MapKit.framework */; };
-		0047028D19915F88003A0DBC /* CheckMate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0047028C19915F88003A0DBC /* CheckMate.framework */; };
 		0047029319917A16003A0DBC /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0047029219917A16003A0DBC /* DetailViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -59,7 +58,6 @@
 		0047027E199154B8003A0DBC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		00470280199154B8003A0DBC /* GetOnThatBusTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GetOnThatBusTests.m; sourceTree = "<group>"; };
 		0047028A199156C5003A0DBC /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		0047028C19915F88003A0DBC /* CheckMate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CheckMate.framework; sourceTree = "<group>"; };
 		0047029119917A16003A0DBC /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailViewController.h; path = ../DetailViewController.h; sourceTree = "<group>"; };
 		0047029219917A16003A0DBC /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailViewController.m; path = ../DetailViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,7 +68,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				001169671991BAE800D524AE /* CoreLocation.framework in Frameworks */,
-				0047028D19915F88003A0DBC /* CheckMate.framework in Frameworks */,
 				0047028B199156C5003A0DBC /* MapKit.framework in Frameworks */,
 				00470258199154B8003A0DBC /* CoreGraphics.framework in Frameworks */,
 				0047025A199154B8003A0DBC /* UIKit.framework in Frameworks */,
@@ -114,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				001169661991BAE800D524AE /* CoreLocation.framework */,
-				0047028C19915F88003A0DBC /* CheckMate.framework */,
 				0047028A199156C5003A0DBC /* MapKit.framework */,
 				00470255199154B8003A0DBC /* Foundation.framework */,
 				00470257199154B8003A0DBC /* CoreGraphics.framework */,
