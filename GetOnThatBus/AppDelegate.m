@@ -3,18 +3,16 @@
 //  GetOnThatBus
 //
 //  Created by Glen Ruhl on 8/5/14.
-//  Copyright (c) 2014 MobileMakers. All rights reserved.
+//  Copyright (c) 2014 Masangcay. All rights reserved.
 //
 
 #import "AppDelegate.h"
-#import <CheckMate/CheckMate.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [CheckMate initializeFramework:@[@"519a915db27bd843eaa8c67cd4c95abe",
-                                     @"acc9e052c0bc40c5c8b97f8e6bcb4c41"]];
+
     //
     return YES;
 }
