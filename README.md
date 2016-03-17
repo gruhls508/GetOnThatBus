@@ -7,5 +7,5 @@ An app showing bus stops in Chicago using MapView, MKPointAnnotations, and JSON 
 source for the bus stops the app intends to present is no longer a valid source--I will be looking into this and coming up with a 
 new source for the data if that is the case.
 
-*Update*
+*Update (3/17)*
 - The data source is indeed gone. Researching alternatives.
