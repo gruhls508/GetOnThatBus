@@ -9,3 +9,5 @@ new source for the data if that is the case.
 
 *Update (3/17)*
 - The data source is indeed gone. Researching alternatives.
+- Found one possible alternative, the [CTA BusTracker API](http://www.transitchicago.com/developers/bustracker.aspx). Waiting on an API key.
+- Docs for the API are [here](http://www.transitchicago.com/assets/1/developer_center/BusTime_Developer_API_Guide.pdf)
