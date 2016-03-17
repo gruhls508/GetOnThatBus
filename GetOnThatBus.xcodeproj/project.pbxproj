@@ -14,7 +14,6 @@
 		00470260199154B8003A0DBC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0047025E199154B8003A0DBC /* InfoPlist.strings */; };
 		00470262199154B8003A0DBC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 00470261199154B8003A0DBC /* main.m */; };
 		00470266199154B8003A0DBC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00470265199154B8003A0DBC /* AppDelegate.m */; };
-		00470269199154B8003A0DBC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00470267199154B8003A0DBC /* Main.storyboard */; };
 		0047026C199154B8003A0DBC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0047026B199154B8003A0DBC /* ViewController.m */; };
 		0047026E199154B8003A0DBC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0047026D199154B8003A0DBC /* Images.xcassets */; };
 		00470275199154B8003A0DBC /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00470274199154B8003A0DBC /* XCTest.framework */; };
@@ -24,6 +23,7 @@
 		00470281199154B8003A0DBC /* GetOnThatBusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00470280199154B8003A0DBC /* GetOnThatBusTests.m */; };
 		0047028B199156C5003A0DBC /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0047028A199156C5003A0DBC /* MapKit.framework */; };
 		0047029319917A16003A0DBC /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0047029219917A16003A0DBC /* DetailViewController.m */; };
+		7E1800231C98B0CE002A68CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E1800221C98B0CE002A68CB /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +48,6 @@
 		00470263199154B8003A0DBC /* GetOnThatBus-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GetOnThatBus-Prefix.pch"; sourceTree = "<group>"; };
 		00470264199154B8003A0DBC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		00470265199154B8003A0DBC /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		00470268199154B8003A0DBC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0047026A199154B8003A0DBC /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		0047026B199154B8003A0DBC /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		0047026D199154B8003A0DBC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -60,6 +59,7 @@
 		0047028A199156C5003A0DBC /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		0047029119917A16003A0DBC /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailViewController.h; path = ../DetailViewController.h; sourceTree = "<group>"; };
 		0047029219917A16003A0DBC /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailViewController.m; path = ../DetailViewController.m; sourceTree = "<group>"; };
+		7E1800221C98B0CE002A68CB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,9 +123,7 @@
 		0047025B199154B8003A0DBC /* GetOnThatBus */ = {
 			isa = PBXGroup;
 			children = (
-				00470264199154B8003A0DBC /* AppDelegate.h */,
-				00470265199154B8003A0DBC /* AppDelegate.m */,
-				00470267199154B8003A0DBC /* Main.storyboard */,
+				7E1800221C98B0CE002A68CB /* Main.storyboard */,
 				0047026A199154B8003A0DBC /* ViewController.h */,
 				0047026B199154B8003A0DBC /* ViewController.m */,
 				0047029119917A16003A0DBC /* DetailViewController.h */,
@@ -139,6 +137,8 @@
 		0047025C199154B8003A0DBC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				00470264199154B8003A0DBC /* AppDelegate.h */,
+				00470265199154B8003A0DBC /* AppDelegate.m */,
 				0047025D199154B8003A0DBC /* GetOnThatBus-Info.plist */,
 				0047025E199154B8003A0DBC /* InfoPlist.strings */,
 				00470261199154B8003A0DBC /* main.m */,
@@ -209,9 +209,12 @@
 		0047024A199154B8003A0DBC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = MobileMakers;
 				TargetAttributes = {
+					00470251199154B8003A0DBC = {
+						DevelopmentTeam = 5K623M54S3;
+					};
 					00470272199154B8003A0DBC = {
 						TestTargetID = 00470251199154B8003A0DBC;
 					};
@@ -241,9 +244,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E1800231C98B0CE002A68CB /* Main.storyboard in Resources */,
 				0047026E199154B8003A0DBC /* Images.xcassets in Resources */,
 				00470260199154B8003A0DBC /* InfoPlist.strings in Resources */,
-				00470269199154B8003A0DBC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,14 +299,6 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		00470267199154B8003A0DBC /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				00470268199154B8003A0DBC /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		0047027D199154B8003A0DBC /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -333,6 +328,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -390,6 +386,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -397,7 +394,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GetOnThatBus/GetOnThatBus-Prefix.pch";
 				INFOPLIST_FILE = "GetOnThatBus/GetOnThatBus-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Masangcay.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -407,6 +407,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -414,7 +415,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GetOnThatBus/GetOnThatBus-Prefix.pch";
 				INFOPLIST_FILE = "GetOnThatBus/GetOnThatBus-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Masangcay.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -435,6 +439,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "GetOnThatBusTests/GetOnThatBusTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Masangcay.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -453,6 +458,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GetOnThatBus/GetOnThatBus-Prefix.pch";
 				INFOPLIST_FILE = "GetOnThatBusTests/GetOnThatBusTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Masangcay.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

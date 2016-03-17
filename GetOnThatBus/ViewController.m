@@ -11,9 +11,10 @@
 #import <MapKit/MapKit.h>
 
 
-@interface ViewController ()<MKMapViewDelegate>
-
+@interface ViewController ()<MKMapViewDelegate, CLLocationManagerDelegate>
 @property NSArray *busStops;
+
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 @property (weak, nonatomic) IBOutlet MKMapView *busMapView;
 @property MKPointAnnotation *busStopAnnotation;
@@ -33,7 +34,8 @@
 {
 
     [super viewDidLoad];
-
+    //  Obtain permission from user to obtain location. iOS 8 and above
+    [self requestPermissionForLocationUpdates];
 
     //  Our school created a JSON Array that stored the info for all of the Chicago bus stops we would plot on the MapView within our app.
 
@@ -95,6 +97,18 @@
     }];
 
 
+}
+
+
+//  iOS 8 and above requires requesting permission when updating user's location.
+//  if user is on iOS 7 and below then this won't execute.
+- (void)requestPermissionForLocationUpdates {
+    self.locationManager = [[CLLocationManager alloc]init];
+    self.locationManager.delegate = self;
+    //Check if using iOS 8 or above to request permission to update location.
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)])
+        [self.locationManager requestWhenInUseAuthorization ];
+    [self.locationManager startUpdatingLocation];
 }
 
 
@@ -173,7 +187,6 @@
     NSLog(@"We BACK.");
 
 }
-
 
 
 @end
