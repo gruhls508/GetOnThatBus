@@ -39,10 +39,15 @@
 
     //  Our school created a JSON Array that stored the info for all of the Chicago bus stops we would plot on the MapView within our app.
 
-    NSURL *url = [NSURL URLWithString:@"https://s3.amazonaws.com/mobile-makers-lib/bus.json"];
+    NSURL *url = [NSURL URLWithString:@"http://chicago.transitapi.com/bustime/map/getRoutePoints.jsp?route=49"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request queue:
     [NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+
+    //  Should get data return in block here in XML format
+
+
+
 
     self.busStops = [[NSJSONSerialization JSONObjectWithData:data
                                                         options:0
