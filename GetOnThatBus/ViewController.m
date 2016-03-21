@@ -11,7 +11,7 @@
 #import <MapKit/MapKit.h>
 
 
-@interface ViewController ()<MKMapViewDelegate, CLLocationManagerDelegate>
+@interface ViewController ()<MKMapViewDelegate, CLLocationManagerDelegate, NSXMLParserDelegate>
 @property NSArray *busStops;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
@@ -37,21 +37,29 @@
     //  Obtain permission from user to obtain location. iOS 8 and above
     [self requestPermissionForLocationUpdates];
 
-    //  Our school created a JSON Array that stored the info for all of the Chicago bus stops we would plot on the MapView within our app.
+    /*  
+        Our school (Mobile Makers) created a JSON Array that stored the info for all of the Chicago bus stops
+        we would plot on the MapView within our app. 
+    */
 
     NSURL *url = [NSURL URLWithString:@"http://chicago.transitapi.com/bustime/map/getRoutePoints.jsp?route=49"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request queue:
     [NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 
+
+
+
     //  Should get data return in block here in XML format
 
+    [self parseXmlData:data];
 
 
 
-    self.busStops = [[NSJSONSerialization JSONObjectWithData:data
-                                                        options:0
-                                                            error:nil] objectForKey:@"row"];
+
+
+
+
         for (NSDictionary *busDic in self.busStops) {
 
             CLLocationCoordinate2D  coordinate;
@@ -115,6 +123,58 @@
         [self.locationManager requestWhenInUseAuthorization ];
     [self.locationManager startUpdatingLocation];
 }
+
+
+
+- (void)parseXmlData:(NSData *)data {
+
+    BOOL success;
+    NSXMLParser *parser = [[NSXMLParser alloc]initWithData:data];
+    parser.delegate = self;
+    [parser parse];
+}
+
+
+
+
+
+
+
+
+#pragma mark NSXMLParserDelegate
+
+
+//  Guide to handling XML elements/attributes--specifically recognizing an elementName in -didStartElement:
+//  and using that to determine identity of string in -parser:foundCharacters:, and thus be able to pass that value
+//  along from the callback correctly https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/XMLParsing/Articles/HandlingElements.html#//apple_ref/doc/uid/20002265-BCIJFGJI
+
+//  Put this implementation, and the method -parseXmlData: into model object(s)
+
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
+                                                                            qualifiedName:(NSString *)qName
+                                                                               attributes:(NSDictionary<NSString *,NSString *> *)attributeDict {
+
+    NSLog(@"-didStartElement, elementName == %@", elementName);
+
+
+}
+
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+
+    NSLog(@"found characters, %@", string);
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
+
+
+}
+
+
+
+
+
 
 
 
