@@ -21,6 +21,7 @@
 		00470281199154B8003A0DBC /* GetOnThatBusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00470280199154B8003A0DBC /* GetOnThatBusTests.m */; };
 		0047028B199156C5003A0DBC /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0047028A199156C5003A0DBC /* MapKit.framework */; };
 		0047029319917A16003A0DBC /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0047029219917A16003A0DBC /* DetailViewController.m */; };
+		51DC18091C9F737A00D01765 /* XmlHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DC18081C9F737A00D01765 /* XmlHandler.m */; };
 		7E1800231C98B0CE002A68CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E1800221C98B0CE002A68CB /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,8 @@
 		0047028A199156C5003A0DBC /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		0047029119917A16003A0DBC /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailViewController.h; path = ../DetailViewController.h; sourceTree = "<group>"; };
 		0047029219917A16003A0DBC /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailViewController.m; path = ../DetailViewController.m; sourceTree = "<group>"; };
+		51DC18071C9F737A00D01765 /* XmlHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlHandler.h; sourceTree = "<group>"; };
+		51DC18081C9F737A00D01765 /* XmlHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XmlHandler.m; sourceTree = "<group>"; };
 		7E1800221C98B0CE002A68CB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,12 +120,9 @@
 		0047025B199154B8003A0DBC /* GetOnThatBus */ = {
 			isa = PBXGroup;
 			children = (
-				7E1800221C98B0CE002A68CB /* Main.storyboard */,
-				0047026A199154B8003A0DBC /* ViewController.h */,
-				0047026B199154B8003A0DBC /* ViewController.m */,
-				0047029119917A16003A0DBC /* DetailViewController.h */,
-				0047029219917A16003A0DBC /* DetailViewController.m */,
-				0047026D199154B8003A0DBC /* Images.xcassets */,
+				51DC18031C9F732B00D01765 /* AppDelegate */,
+				51DC18021C9F731E00D01765 /* IB */,
+				51DC18051C9F734F00D01765 /* MVC */,
 				0047025C199154B8003A0DBC /* Supporting Files */,
 			);
 			path = GetOnThatBus;
@@ -131,8 +131,7 @@
 		0047025C199154B8003A0DBC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				00470264199154B8003A0DBC /* AppDelegate.h */,
-				00470265199154B8003A0DBC /* AppDelegate.m */,
+				0047026D199154B8003A0DBC /* Images.xcassets */,
 				0047025D199154B8003A0DBC /* GetOnThatBus-Info.plist */,
 				00470261199154B8003A0DBC /* main.m */,
 				00470263199154B8003A0DBC /* GetOnThatBus-Prefix.pch */,
@@ -156,6 +155,52 @@
 				0047027D199154B8003A0DBC /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		51DC18021C9F731E00D01765 /* IB */ = {
+			isa = PBXGroup;
+			children = (
+				7E1800221C98B0CE002A68CB /* Main.storyboard */,
+			);
+			name = IB;
+			sourceTree = "<group>";
+		};
+		51DC18031C9F732B00D01765 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				00470264199154B8003A0DBC /* AppDelegate.h */,
+				00470265199154B8003A0DBC /* AppDelegate.m */,
+			);
+			name = AppDelegate;
+			sourceTree = "<group>";
+		};
+		51DC18041C9F733900D01765 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				0047026A199154B8003A0DBC /* ViewController.h */,
+				0047026B199154B8003A0DBC /* ViewController.m */,
+				0047029119917A16003A0DBC /* DetailViewController.h */,
+				0047029219917A16003A0DBC /* DetailViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		51DC18051C9F734F00D01765 /* MVC */ = {
+			isa = PBXGroup;
+			children = (
+				51DC18061C9F736100D01765 /* Models */,
+				51DC18041C9F733900D01765 /* ViewControllers */,
+			);
+			name = MVC;
+			sourceTree = "<group>";
+		};
+		51DC18061C9F736100D01765 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				51DC18071C9F737A00D01765 /* XmlHandler.h */,
+				51DC18081C9F737A00D01765 /* XmlHandler.m */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,6 +306,7 @@
 				00470266199154B8003A0DBC /* AppDelegate.m in Sources */,
 				00470262199154B8003A0DBC /* main.m in Sources */,
 				0047029319917A16003A0DBC /* DetailViewController.m in Sources */,
+				51DC18091C9F737A00D01765 /* XmlHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
