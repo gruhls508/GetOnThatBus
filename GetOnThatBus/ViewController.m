@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "DetailViewController.h"
+#import "XmlHandler.h"
+
 #import <MapKit/MapKit.h>
 
 
@@ -28,7 +30,10 @@
 
 @end
 
-@implementation ViewController
+@implementation ViewController {
+
+    XmlHandler *xmlHandler;
+}
 
 - (void)viewDidLoad
 {
@@ -44,6 +49,11 @@
 
     NSURL *url = [NSURL URLWithString:@"http://chicago.transitapi.com/bustime/map/getRoutePoints.jsp?route=49"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+
+
+    xmlHandler = [XmlHandler new];
+
     [NSURLConnection sendAsynchronousRequest:request queue:
     [NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 
@@ -52,7 +62,8 @@
 
     //  Should get data return in block here in XML format
 
-    [self parseXmlData:data];
+
+    [xmlHandler parseXmlData:data];
 
 
 
@@ -136,49 +147,7 @@
 
 
 
-
-
-
-
-
-#pragma mark NSXMLParserDelegate
-
-
-//  Guide to handling XML elements/attributes--specifically recognizing an elementName in -didStartElement:
-//  and using that to determine identity of string in -parser:foundCharacters:, and thus be able to pass that value
-//  along from the callback correctly https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/XMLParsing/Articles/HandlingElements.html#//apple_ref/doc/uid/20002265-BCIJFGJI
-
-//  Put this implementation, and the method -parseXmlData: into model object(s)
-
-
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
-                                                                            qualifiedName:(NSString *)qName
-                                                                               attributes:(NSDictionary<NSString *,NSString *> *)attributeDict {
-
-    NSLog(@"-didStartElement, elementName == %@", elementName);
-
-
-}
-
-
-- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-
-    NSLog(@"found characters, %@", string);
-}
-
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
-
-
-}
-
-
-
-
-
-
-
-
-        //  In this code we created our Map Annotations (pins.) We set them up so that they could show "callouts" that would display the pin's title & subtitle (bus stop name and routes.)
+//  In this code we created our Map Annotations (pins.) We set them up so that they could show "callouts" that would display the pin's title & subtitle (bus stop name and routes.)
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface XmlHandler : NSObject
+@interface XmlHandler : NSObject <NSXMLParserDelegate>
+
+- (void)parseXmlData:(NSData *)data;
 
 @end
