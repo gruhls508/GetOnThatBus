@@ -12,11 +12,8 @@
 
 - (void)parseXmlData:(NSData *)data {
 
-
     if (_parser == nil)
         _parser = [[NSXMLParser alloc]initWithData:data];
-
-
 }
 
 

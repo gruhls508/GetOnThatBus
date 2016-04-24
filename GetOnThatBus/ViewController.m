@@ -11,6 +11,7 @@
 #import "XmlHandler.h"
 
 #import <MapKit/MapKit.h>
+#import "Constants.h"
 
 
 @interface ViewController ()<MKMapViewDelegate, CLLocationManagerDelegate, NSXMLParserDelegate>
@@ -35,59 +36,41 @@
     XmlHandler *xmlHandler;
     NSDictionary *busStops;
     NSString *stopName;
+    NSDictionary *stopCoordinates;
 
     BOOL elementIsStopName;
+    BOOL elementIsLat;
+    BOOL elementIsLong;
 }
-
-
-
-NSString *const stopElementName = @"stpnm";
 
 
 - (void)viewDidLoad
 {
-
     [super viewDidLoad];
     //  Obtain permission from user to obtain location. iOS 8 and above
     [self requestPermissionForLocationUpdates];
+    stopName = @"";
 
-    /*  
-        Our school (Mobile Makers) created a JSON Array that stored the info for all of the Chicago bus stops
-        we would plot on the MapView within our app. 
-    */
-
-//    NSURL *url = [NSURL URLWithString:@"http://chicago.transitapi.com/bustime/map/getRoutePoints.jsp?route=49"];
 
     NSURL *ctaUrl = [NSURL URLWithString:
-                            @"http://www.ctabustracker.com/bustime/api/v1/getstops?key=PhJHkRTCjfjFTcT8FuSufpBri&rt=20&dir=Westbound"];
+                            @"http://www.ctabustracker.com/bustime/api/v1/getstops?"
+                                    "key=PhJHkRTCjfjFTcT8FuSufpBri&rt=20&dir=Westbound"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:ctaUrl];
 
-
-
     xmlHandler = [XmlHandler new];
-    stopName = @"";
 
     [NSURLConnection sendAsynchronousRequest:request queue:
     [NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 
-
-
-    //  Should get data return in block here in XML format
         [xmlHandler parseXmlData:data];
         [xmlHandler.parser setDelegate:self];
-
-
-        NSLog(@"xmlHandlxmlHandler delegate == %@", xmlHandler.parser.delegate);
-
         BOOL didParse = [xmlHandler.parser parse];
 
         if (didParse) {
-
             NSLog(@"parsed");
         }
         else if (!didParse) {
-
             NSLog(@"did not parse");
         }
     }];
@@ -186,9 +169,7 @@ NSString *const stopElementName = @"stpnm";
 
 -(IBAction)unwindBack:(UIStoryboardSegue *)sender
 {
-
     NSLog(@"We BACK.");
-
 }
 
 
@@ -209,16 +190,15 @@ NSString *const stopElementName = @"stpnm";
 
     NSLog(@"-didStartElement, elementName == %@", elementName);
 
-    if ([elementName isEqualToString:stopElementName]) {
-
-
+    if ([elementName isEqualToString:kstopElementName]) {
         elementIsStopName = YES;
-
-
-
     }
-//    stopName
-
+    else if ([elementName isEqualToString:klatKey]) {
+        elementIsLat = YES;
+    }
+    else if ([elementName isEqualToString:klongKey]) {
+        elementIsLong = YES;
+    }
 }
 
 
@@ -229,16 +209,30 @@ NSString *const stopElementName = @"stpnm";
     if (elementIsStopName) {
         stopName = [stopName isEqualToString:@""] ? string : [XmlHandler appendNameComponent:string toName:stopName];
     }
-    else if (!elementIsStopName && [stopName isEqualToString:@""] == NO)
+    else if (!elementIsStopName && [stopName isEqualToString:@""] == NO) {
         stopName = @"";
-
-
+    }
+    else if (elementIsLat) {
+        stopCoordinates = nil;
+        NSMutableDictionary *mutableCoordinates = stopCoordinates.mutableCopy;
+        [mutableCoordinates setObject:string forKey:klatKey];
+        stopCoordinates = [NSDictionary dictionaryWithDictionary:mutableCoordinates];
+    }
     NSLog(@"stopName == %@", stopName);
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
     if (elementIsStopName)
         elementIsStopName = !elementIsStopName;
+    else if (elementIsLat)
+        elementIsLat = !elementIsLat;
+    else if (elementIsLong) {
+
+        elementIsLong = !elementIsLong;
+        //  Call function to make map annotation and place on map using coords and name set up using XML that was just provided/consumed
+        //  by the app.
+    }
+
 
     NSLog(@"-didEndElement elementName == %@", elementName);
 }

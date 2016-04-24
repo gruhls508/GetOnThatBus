@@ -21,6 +21,7 @@
 		00470281199154B8003A0DBC /* GetOnThatBusTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00470280199154B8003A0DBC /* GetOnThatBusTests.m */; };
 		0047028B199156C5003A0DBC /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0047028A199156C5003A0DBC /* MapKit.framework */; };
 		0047029319917A16003A0DBC /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0047029219917A16003A0DBC /* DetailViewController.m */; };
+		5173B3801CCD334100EA4FEF /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5173B37F1CCD334100EA4FEF /* Constants.m */; };
 		51DC18091C9F737A00D01765 /* XmlHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DC18081C9F737A00D01765 /* XmlHandler.m */; };
 		7E1800231C98B0CE002A68CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E1800221C98B0CE002A68CB /* Main.storyboard */; };
 /* End PBXBuildFile section */
@@ -56,6 +57,8 @@
 		0047028A199156C5003A0DBC /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		0047029119917A16003A0DBC /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailViewController.h; path = ../DetailViewController.h; sourceTree = "<group>"; };
 		0047029219917A16003A0DBC /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailViewController.m; path = ../DetailViewController.m; sourceTree = "<group>"; };
+		5173B37E1CCD334100EA4FEF /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		5173B37F1CCD334100EA4FEF /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		51DC18071C9F737A00D01765 /* XmlHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XmlHandler.h; sourceTree = "<group>"; };
 		51DC18081C9F737A00D01765 /* XmlHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XmlHandler.m; sourceTree = "<group>"; };
 		7E1800221C98B0CE002A68CB /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -124,6 +127,8 @@
 				51DC18021C9F731E00D01765 /* IB */,
 				51DC18051C9F734F00D01765 /* MVC */,
 				0047025C199154B8003A0DBC /* Supporting Files */,
+				5173B37E1CCD334100EA4FEF /* Constants.h */,
+				5173B37F1CCD334100EA4FEF /* Constants.m */,
 			);
 			path = GetOnThatBus;
 			sourceTree = "<group>";
@@ -307,6 +312,7 @@
 				00470262199154B8003A0DBC /* main.m in Sources */,
 				0047029319917A16003A0DBC /* DetailViewController.m in Sources */,
 				51DC18091C9F737A00D01765 /* XmlHandler.m in Sources */,
+				5173B3801CCD334100EA4FEF /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
