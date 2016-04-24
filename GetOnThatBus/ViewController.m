@@ -23,9 +23,6 @@
 @property MKPointAnnotation *busStopAnnotation;
 
 @property NSString *titleString;
-
-@property float longitudeSum;
-@property float latitudeSum;
 @property float longitudeMean;
 @property float latitudeMean;
 
@@ -41,6 +38,9 @@
     BOOL elementIsStopName;
     BOOL elementIsLat;
     BOOL elementIsLong;
+
+    float latitudeSum;
+    float longitudeSum;
 }
 
 
@@ -108,8 +108,6 @@
     pin.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
 
     return pin;
-
-
 }
 
 
@@ -120,7 +118,6 @@
 {
 
     self.titleString = view.annotation.title;
-
    [self performSegueWithIdentifier: @"DetailPush" sender: self];
 }
 
@@ -230,7 +227,8 @@
     NSLog(@"stopName == %@", stopName);
 }
 
-- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
+                                                                                    qualifiedName:(NSString *)qName {
     if (elementIsStopName)
         elementIsStopName = !elementIsStopName;
     else if (elementIsLat)
@@ -240,12 +238,48 @@
         elementIsLong = !elementIsLong;
 
         busStops = [XmlHandler dictionary:busStops addObject:stopCoordinates forKey:stopName];
-        stopName = @"";
         NSLog(@"busStops == %@", busStops);
         
 
         //  Call function to make map annotation and place on map using coords and name set up using XML that was just provided/consumed
         //  by the app.
+        float latitude = [[stopCoordinates objectForKey:klatKey]floatValue];
+        float longitude = [[stopCoordinates objectForKey:klongKey]floatValue];
+        CLLocationCoordinate2D  coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+
+        MKPointAnnotation *stopPoint = [MKPointAnnotation new];
+        stopPoint.coordinate = coordinate;
+        stopPoint.title = stopName;
+        //  TODO: Get route for here - orig. code self.busStopAnnotation.subtitle = [busDic objectForKey:@"routes"];
+
+
+        latitudeSum += latitude;
+        longitudeSum += longitude;
+
+
+        NSUInteger numberOfStops = busStops.allKeys.count;
+        _latitudeMean = latitudeSum / numberOfStops;
+        _longitudeMean = longitudeSum / numberOfStops;
+
+
+        NSLog(@"latitudeMean == %f longitudeMean == %f", _latitudeMean, _longitudeMean);
+
+        CLLocationCoordinate2D zoomLocation;
+        zoomLocation.latitude = self.latitudeMean;
+        zoomLocation.longitude = self.longitudeMean;
+        MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 30000, 25000);
+        MKCoordinateRegion adjustedRegion = [self.busMapView regionThatFits:viewRegion];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_busMapView addAnnotation:stopPoint];
+            [self.busMapView setRegion:adjustedRegion animated:YES];
+        });
+
+
+        stopName = @"";
+
+
+        //  **calculate latitude/longitude sums here
     }
 
 
