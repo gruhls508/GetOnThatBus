@@ -15,4 +15,7 @@
 - (void)parseXmlData:(NSData *)data;
 + (NSString *)appendNameComponent:(NSString *)component toName:(NSString *)name;
 
++ (NSDictionary *)dictionary:(NSDictionary *)dictionary
+                   addObject:(id)object forKey:(NSString *)key;
+
 @end

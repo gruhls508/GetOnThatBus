@@ -23,4 +23,18 @@
 }
 
 
+/*  
+    This method will be used when adding coordinate string for given key
+    to a bus stop object. */
++ (NSDictionary *)dictionary:(NSDictionary *)dictionary
+                  addObject:(id)object forKey:(NSString *)key {
+
+    NSMutableDictionary *mutable = dictionary.mutableCopy;
+    [mutable setObject:object forKey:key];
+
+    return [NSDictionary dictionaryWithDictionary:mutable];
+}
+
+
+
 @end

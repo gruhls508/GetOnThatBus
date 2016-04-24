@@ -12,6 +12,6 @@
 
 NSString *const kstopElementName = @"stpnm";
 NSString *const klatKey = @"lat";
-NSString *const klongKey = @"long";
+NSString *const klongKey = @"lon";
 
 @end

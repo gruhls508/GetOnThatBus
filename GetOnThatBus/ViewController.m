@@ -15,7 +15,7 @@
 
 
 @interface ViewController ()<MKMapViewDelegate, CLLocationManagerDelegate, NSXMLParserDelegate>
-@property NSArray *busStops;
+//@property NSArray *busStops;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 
@@ -50,7 +50,7 @@
     //  Obtain permission from user to obtain location. iOS 8 and above
     [self requestPermissionForLocationUpdates];
     stopName = @"";
-
+    busStops = @{};
 
     NSURL *ctaUrl = [NSURL URLWithString:
                             @"http://www.ctabustracker.com/bustime/api/v1/getstops?"
@@ -156,11 +156,16 @@
 
     DetailViewController *dvc = segue.destinationViewController;
 
-    for (NSDictionary *dic in self.busStops) {
-        if ([dic objectForKey:@"cta_stop_name"] == self.titleString) {
-            dvc.busStopInfo = dic;
-        }
-    }
+
+    //  This must change to get appropriate stop for detail view from
+    //  new 'busStops' NSDictionary object.
+
+
+//    for (NSDictionary *dic in self.busStops) {
+//        if ([dic objectForKey:@"cta_stop_name"] == self.titleString) {
+//            dvc.busStopInfo = dic;
+//        }
+//    }
 
 }
 
@@ -175,7 +180,6 @@
 
 
 #pragma mark NSXMLParserDelegate
-
 
 //  Guide to handling XML elements/attributes--specifically recognizing an elementName in -didStartElement:
 //  and using that to determine identity of string in -parser:foundCharacters:, and thus be able to pass that value
@@ -209,14 +213,20 @@
     if (elementIsStopName) {
         stopName = [stopName isEqualToString:@""] ? string : [XmlHandler appendNameComponent:string toName:stopName];
     }
-    else if (!elementIsStopName && [stopName isEqualToString:@""] == NO) {
-        stopName = @"";
-    }
-    else if (elementIsLat) {
-        stopCoordinates = nil;
-        NSMutableDictionary *mutableCoordinates = stopCoordinates.mutableCopy;
-        [mutableCoordinates setObject:string forKey:klatKey];
-        stopCoordinates = [NSDictionary dictionaryWithDictionary:mutableCoordinates];
+    else if (elementIsLat || elementIsLong) {
+
+        NSString *key;
+
+        if (elementIsLat) {
+            stopCoordinates = @{};
+            key = klatKey;
+        }
+        else if (elementIsLong) {
+
+            key = klongKey;
+        }
+        stopCoordinates = [XmlHandler dictionary:stopCoordinates addObject:string forKey:key];
+        NSLog(@"stopCoordinates == %@", stopCoordinates);
     }
     NSLog(@"stopName == %@", stopName);
 }
@@ -229,6 +239,12 @@
     else if (elementIsLong) {
 
         elementIsLong = !elementIsLong;
+
+        busStops = [XmlHandler dictionary:busStops addObject:stopCoordinates forKey:stopName];
+        stopName = @"";
+        NSLog(@"busStops == %@", busStops);
+        
+
         //  Call function to make map annotation and place on map using coords and name set up using XML that was just provided/consumed
         //  by the app.
     }
