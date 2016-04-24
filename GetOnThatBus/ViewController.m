@@ -57,7 +57,6 @@
                                     "key=PhJHkRTCjfjFTcT8FuSufpBri&rt=20&dir=Westbound"];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:ctaUrl];
-
     xmlHandler = [XmlHandler new];
 
     [NSURLConnection sendAsynchronousRequest:request queue:
