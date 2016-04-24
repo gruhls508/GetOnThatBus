@@ -33,7 +33,16 @@
 @implementation ViewController {
 
     XmlHandler *xmlHandler;
+    NSDictionary *busStops;
+    NSString *stopName;
+
+    BOOL elementIsStopName;
 }
+
+
+
+NSString *const stopElementName = @"stpnm";
+
 
 - (void)viewDidLoad
 {
@@ -47,80 +56,41 @@
         we would plot on the MapView within our app. 
     */
 
-    NSURL *url = [NSURL URLWithString:@"http://chicago.transitapi.com/bustime/map/getRoutePoints.jsp?route=49"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    NSURL *url = [NSURL URLWithString:@"http://chicago.transitapi.com/bustime/map/getRoutePoints.jsp?route=49"];
+
+    NSURL *ctaUrl = [NSURL URLWithString:
+                            @"http://www.ctabustracker.com/bustime/api/v1/getstops?key=PhJHkRTCjfjFTcT8FuSufpBri&rt=20&dir=Westbound"];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:ctaUrl];
 
 
 
     xmlHandler = [XmlHandler new];
+    stopName = @"";
 
     [NSURLConnection sendAsynchronousRequest:request queue:
     [NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 
 
 
-
     //  Should get data return in block here in XML format
+        [xmlHandler parseXmlData:data];
+        [xmlHandler.parser setDelegate:self];
 
 
-    [xmlHandler parseXmlData:data];
+        NSLog(@"xmlHandlxmlHandler delegate == %@", xmlHandler.parser.delegate);
 
+        BOOL didParse = [xmlHandler.parser parse];
 
+        if (didParse) {
 
-
-
-
-
-        for (NSDictionary *busDic in self.busStops) {
-
-            CLLocationCoordinate2D  coordinate;
-            coordinate.latitude = [[busDic objectForKey:@"latitude"]floatValue];
-
-
-
-            //  Our instructors intentionally gave us one coordinate set in which the longitude's absolute value was correct, but it was made POSITIVE, rather than the negative value corresponding to the acutal Chicago bus stop. The following "if" statement is set up to handle that contingency.
-
-            if ([[busDic objectForKey:@"longitude"]floatValue] > 0) {
-                 coordinate.longitude = [[busDic objectForKey:@"longitude"]floatValue] * -1;
-            }
-            else{
-
-            coordinate.longitude = [[busDic objectForKey:@"longitude"]floatValue];
-
-            }
-
-            self.longitudeSum += coordinate.longitude;
-            self.latitudeSum += coordinate.latitude;
-            self.longitudeMean = self.longitudeSum / self.busStops.count;
-            self.latitudeMean = self.latitudeSum / self.busStops.count;
-
-
-
-
-            //  The following code sets up the Map Annotations, and gets their titles/subtitles from the corresponding data within the online array that denotes the bus stop's name and routes serviced.
-
-            self.busStopAnnotation = [[MKPointAnnotation alloc]init];
-            self.busStopAnnotation.coordinate = coordinate;
-            self.busStopAnnotation.title = [busDic objectForKey:@"cta_stop_name"];
-            self.busStopAnnotation.subtitle = [busDic objectForKey:@"routes"];
-            [self.busMapView addAnnotation:self.busStopAnnotation];
-
-
-
-
-            //  Here we experimented with different numerical values in order to find the "sweet spot" that would display all of the bus stops we plotted without being too zoomed out. Our final solution can be found within the parentheses in the MKCoordinateRegionMakeWithDistance call.
-
-            CLLocationCoordinate2D zoomLocation;
-            zoomLocation.latitude = self.latitudeMean;
-            zoomLocation.longitude = self.longitudeMean;
-            MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 30000, 25000);
-            MKCoordinateRegion adjustedRegion = [self.busMapView regionThatFits:viewRegion];
-            [self.busMapView setRegion:adjustedRegion animated:YES];
+            NSLog(@"parsed");
         }
+        else if (!didParse) {
 
+            NSLog(@"did not parse");
+        }
     }];
-
-
 }
 
 
@@ -170,7 +140,6 @@
     self.titleString = view.annotation.title;
 
    [self performSegueWithIdentifier: @"DetailPush" sender: self];
-
 }
 
 
@@ -222,5 +191,56 @@
 
 }
 
+
+
+#pragma mark NSXMLParserDelegate
+
+
+//  Guide to handling XML elements/attributes--specifically recognizing an elementName in -didStartElement:
+//  and using that to determine identity of string in -parser:foundCharacters:, and thus be able to pass that value
+//  along from the callback correctly https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/XMLParsing/Articles/HandlingElements.html#//apple_ref/doc/uid/20002265-BCIJFGJI
+
+//  Put this implementation, and the method -parseXmlData: into model object(s)
+
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
+ qualifiedName:(NSString *)qName
+    attributes:(NSDictionary<NSString *,NSString *> *)attributeDict {
+
+    NSLog(@"-didStartElement, elementName == %@", elementName);
+
+    if ([elementName isEqualToString:stopElementName]) {
+
+
+        elementIsStopName = YES;
+
+
+
+    }
+//    stopName
+
+}
+
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+
+    NSLog(@"found characters, %@", string);
+
+    if (elementIsStopName) {
+        stopName = [stopName isEqualToString:@""] ? string : [XmlHandler appendNameComponent:string toName:stopName];
+    }
+    else if (!elementIsStopName && [stopName isEqualToString:@""] == NO)
+        stopName = @"";
+
+
+    NSLog(@"stopName == %@", stopName);
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
+    if (elementIsStopName)
+        elementIsStopName = !elementIsStopName;
+
+    NSLog(@"-didEndElement elementName == %@", elementName);
+}
 
 @end

@@ -10,6 +10,9 @@
 
 @interface XmlHandler : NSObject <NSXMLParserDelegate>
 
+@property (strong, nonatomic) NSXMLParser *parser;
+
 - (void)parseXmlData:(NSData *)data;
++ (NSString *)appendNameComponent:(NSString *)component toName:(NSString *)name;
 
 @end
