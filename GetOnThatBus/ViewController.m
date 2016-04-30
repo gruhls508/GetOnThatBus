@@ -66,9 +66,18 @@
         [xmlHandler.parser setDelegate:self];
         BOOL didParse = [xmlHandler.parser parse];
 
+
+
         if (didParse) {
             NSLog(@"parsed");
+
+            //  call -drawPolyline function using stops data in 'busStops'
+            [self drawRouteWithStops:busStops];
+
         }
+
+
+
         else if (!didParse) {
             NSLog(@"did not parse");
         }
@@ -96,6 +105,21 @@
     parser.delegate = self;
     [parser parse];
 }
+
+
+
+
+- (void)drawRouteWithStops:(NSDictionary *)stops {
+
+
+    for (NSDictionary *stop in stops.allValues) {
+
+        
+    }
+
+}
+
+
 
 
 
@@ -252,17 +276,13 @@
         stopPoint.title = stopName;
         //  TODO: Get route for here - orig. code self.busStopAnnotation.subtitle = [busDic objectForKey:@"routes"];
 
-
         latitudeSum += latitude;
         longitudeSum += longitude;
-
 
         NSUInteger numberOfStops = busStops.allKeys.count;
         _latitudeMean = latitudeSum / numberOfStops;
         _longitudeMean = longitudeSum / numberOfStops;
 
-
-        NSLog(@"latitudeMean == %f longitudeMean == %f", _latitudeMean, _longitudeMean);
 
         CLLocationCoordinate2D zoomLocation;
         zoomLocation.latitude = self.latitudeMean;
