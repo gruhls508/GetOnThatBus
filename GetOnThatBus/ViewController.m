@@ -100,7 +100,6 @@
 
 - (void)parseXmlData:(NSData *)data {
 
-    BOOL success;
     NSXMLParser *parser = [[NSXMLParser alloc]initWithData:data];
     parser.delegate = self;
     [parser parse];
@@ -111,14 +110,51 @@
 
 - (void)drawRouteWithStops:(NSDictionary *)stops {
 
+    CLLocationCoordinate2D fromCoordinate;
+    NSArray *coordinateArray = stops.allValues;
 
+
+    id firstStop = coordinateArray.firstObject;
+
+
+    CLLocationCoordinate2D coordinates[coordinateArray.count];
     for (NSDictionary *stop in stops.allValues) {
 
-        
+        //  For first obj in .allValues, just create a 'fromStop' from the stored lat/long
+        //  values. For the rest, create a 'toValue,'
+
+        NSUInteger stopIndex = [stops.allValues indexOfObject:stop];
+        float latitude = [[stop objectForKey:klatKey]floatValue];
+        float longitude = [[stop objectForKey:klongKey]floatValue];
+        CLLocationCoordinate2D  coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+
+        coordinates[stopIndex] = coordinate;
+
+
+        if (stop != firstStop) {
+
+
+            //  Draw polyLine from 'fromCoordinate' to 'toCoordinate
+        }
+
+        fromCoordinate = coordinate;
+
     }
 
+    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:coordinateArray.count];
+
+    //  Check _busMapView delegate. Check polyLine? Check polyLine attributes? Width, color, etc?
+
+    [_busMapView addOverlay:polyLine];
 }
 
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+    MKPolylineView *polylineView = [[MKPolylineView alloc] initWithPolyline:overlay];
+    polylineView.strokeColor = [UIColor redColor];
+    polylineView.lineWidth = 1.0;
+
+    return polylineView;
+}
 
 
 
@@ -291,7 +327,7 @@
         MKCoordinateRegion adjustedRegion = [self.busMapView regionThatFits:viewRegion];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_busMapView addAnnotation:stopPoint];
+//            [_busMapView addAnnotation:stopPoint];
             [self.busMapView setRegion:adjustedRegion animated:YES];
         });
 
