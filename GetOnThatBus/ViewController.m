@@ -110,14 +110,25 @@
 
 - (void)drawRouteWithStops:(NSDictionary *)stops {
 
-    CLLocationCoordinate2D fromCoordinate;
+    MKMapItem *fromItem;
     NSArray *coordinateArray = stops.allValues;
 
 
     id firstStop = coordinateArray.firstObject;
 
 
-    CLLocationCoordinate2D coordinates[coordinateArray.count];
+
+
+    //  ***NOTE***: I think the thing to do, rather than just drawing polyLines
+    //  on the map with given coordinates, is to switch up which API is supplying
+    //  MKPolyLine with its drawing path/coordinates.
+
+
+    //  Try MKDirections as demonstrated here
+    //  http://andriyadi.me/provide-routing-on-mapview-using-mkdirections-and-custom-routing/
+
+
+
     for (NSDictionary *stop in stops.allValues) {
 
         //  For first obj in .allValues, just create a 'fromStop' from the stored lat/long
@@ -128,30 +139,66 @@
         float longitude = [[stop objectForKey:klongKey]floatValue];
         CLLocationCoordinate2D  coordinate = CLLocationCoordinate2DMake(latitude, longitude);
 
-        coordinates[stopIndex] = coordinate;
+        MKPlacemark *placeMark = [[MKPlacemark alloc]initWithCoordinate:coordinate addressDictionary:nil];
+        MKMapItem *mapItem = [[MKMapItem alloc]initWithPlacemark:placeMark];
 
 
-        if (stop != firstStop) {
 
 
-            //  Draw polyLine from 'fromCoordinate' to 'toCoordinate
+        if (stop != firstStop
+            && stopIndex == 1) {
+
+
+
+
+            
+
+            //  Make call to get directions taking you from 'fromItem' to 'mapItem' here.
+            [self findDirectionsFrom:fromItem to:mapItem];
+
+
         }
-
-        fromCoordinate = coordinate;
-
+        fromItem = mapItem;
     }
-
-    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:coordinateArray.count];
-
-    //  Check _busMapView delegate. Check polyLine? Check polyLine attributes? Width, color, etc?
-
-    [_busMapView addOverlay:polyLine];
 }
+
+
+
+
+- (void)findDirectionsFrom:(MKMapItem *)source to:(MKMapItem *)destination {
+
+    MKDirectionsRequest *request = [MKDirectionsRequest new];
+    request.source = source;
+    request.transportType = MKDirectionsTransportTypeAutomobile;
+    request.destination = destination;
+
+    MKDirections *directions = [[MKDirections alloc]initWithRequest:request];
+    __block typeof(self) weakSelf = self;
+
+    [directions calculateDirectionsWithCompletionHandler:
+                                    ^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+
+        if (error) {
+
+            NSLog(@"Error retrieving directions %@", error);
+        }
+        else {
+
+            MKRoute *route = [response.routes firstObject];
+            [_busMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+        }
+    }];
+}
+
+
+
+
+
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
     MKPolylineView *polylineView = [[MKPolylineView alloc] initWithPolyline:overlay];
-    polylineView.strokeColor = [UIColor redColor];
-    polylineView.lineWidth = 1.0;
+    polylineView.strokeColor = [UIColor blueColor];
+    polylineView.lineWidth = 7.0f;
 
     return polylineView;
 }
