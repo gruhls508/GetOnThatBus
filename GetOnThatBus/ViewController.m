@@ -31,7 +31,7 @@
 @implementation ViewController {
 
     XmlHandler *xmlHandler;
-    NSDictionary *busStops;
+    NSArray *busStops;
     NSString *stopName;
     NSDictionary *stopCoordinates;
 
@@ -66,18 +66,12 @@
         [xmlHandler.parser setDelegate:self];
         BOOL didParse = [xmlHandler.parser parse];
 
-
-
         if (didParse) {
             NSLog(@"parsed");
 
             //  call -drawPolyline function using stops data in 'busStops'
             [self drawRouteWithStops:busStops];
-
         }
-
-
-
         else if (!didParse) {
             NSLog(@"did not parse");
         }
@@ -85,8 +79,10 @@
 }
 
 
-//  iOS 8 and above requires requesting permission when updating user's location.
-//  if user is on iOS 7 and below then this won't execute.
+/*  
+    iOS 8 and above requires requesting permission when updating user's location.
+    if user is on iOS 7 and below this code won't execute. 
+*/
 - (void)requestPermissionForLocationUpdates {
     self.locationManager = [[CLLocationManager alloc]init];
     self.locationManager.delegate = self;
@@ -96,16 +92,12 @@
     [self.locationManager startUpdatingLocation];
 }
 
-
-
 - (void)parseXmlData:(NSData *)data {
 
     NSXMLParser *parser = [[NSXMLParser alloc]initWithData:data];
     parser.delegate = self;
     [parser parse];
 }
-
-
 
 
 - (void)drawRouteWithStops:(NSDictionary *)stops {
@@ -155,14 +147,10 @@
 
             //  Make call to get directions taking you from 'fromItem' to 'mapItem' here.
             [self findDirectionsFrom:fromItem to:mapItem];
-
-
         }
         fromItem = mapItem;
     }
 }
-
-
 
 
 - (void)findDirectionsFrom:(MKMapItem *)source to:(MKMapItem *)destination {
@@ -344,7 +332,69 @@
 
         elementIsLong = !elementIsLong;
 
+
+
+
+        //  Call instead a function that will place 'newBusStop' in an array
+
+
+        NSDictionary *newBusStop = [NSDictionary dictionaryWithObject:stopCoordinates forKey:stopName];
+
+        if (busStops.count < 1 || busStops == nil) {
+
+
+            //  Instantiate busStops as an array containing just 'newBusStop'
+            busStops = @[newBusStop];
+        }
+        else if (busStops.count >= 1) {
+
+
+            for (NSDictionary *storedStop in busStops) {
+
+
+                NSString *storedStopName = [storedStop objectForKey:stopName];
+                NSDictionary *storedCoordinates = [storedStop objectForKey:storedStopName];\
+
+
+                /*  
+                    Ultimately when this method of sorting stops before they're packed up into
+                    the updated version of the collection storing them is found to be a good one,
+                    the ORDER of it will be determined by looking at the direction parameter--
+                    tells me whether order by latitude or longitude, and whether to order by increasing or
+                    decreasing absolute value. 
+                */
+
+
+                float storedLongitude = [[storedCoordinates objectForKey:klongKey]floatValue];
+                float newLongitude = [[stopCoordinates objectForKey:klongKey]floatValue];
+
+
+                float storedAbsolute = fabsf(storedLongitude);
+                float newAbsolute = fabsf(newLongitude);
+
+                if (newAbsolute < storedAbsolute) {
+
+
+                }
+
+
+
+            }
+
+
+        }
+
+
+
+
+
+
         busStops = [XmlHandler dictionary:busStops addObject:stopCoordinates forKey:stopName];
+
+
+
+
+
         NSLog(@"busStops == %@", busStops);
         
 
@@ -362,7 +412,7 @@
         latitudeSum += latitude;
         longitudeSum += longitude;
 
-        NSUInteger numberOfStops = busStops.allKeys.count;
+        NSUInteger numberOfStops = busStops.count;
         _latitudeMean = latitudeSum / numberOfStops;
         _longitudeMean = longitudeSum / numberOfStops;
 
