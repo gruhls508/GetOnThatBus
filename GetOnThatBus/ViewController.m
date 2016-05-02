@@ -50,7 +50,6 @@
     //  Obtain permission from user to obtain location. iOS 8 and above
     [self requestPermissionForLocationUpdates];
     stopName = @"";
-    busStops = @{};
 
     NSURL *ctaUrl = [NSURL URLWithString:
                             @"http://www.ctabustracker.com/bustime/api/v1/getstops?"
@@ -100,35 +99,26 @@
 }
 
 
-- (void)drawRouteWithStops:(NSDictionary *)stops {
+- (void)drawRouteWithStops:(NSArray *)stops {
 
     MKMapItem *fromItem;
-    NSArray *coordinateArray = stops.allValues;
+    NSDictionary *coordinates;
+    NSMutableArray *mutableArray = @[].mutableCopy;
 
+    for (NSDictionary *stop in stops) {
+        //  Check value of 'coordinates'
+        coordinates = [stop allValues].firstObject;
+        [mutableArray addObject:coordinates];
+    }
+    NSArray *coordinateArray = [NSArray arrayWithArray:mutableArray];
 
-    id firstStop = coordinateArray.firstObject;
-
-
-
-
-    //  ***NOTE***: I think the thing to do, rather than just drawing polyLines
-    //  on the map with given coordinates, is to switch up which API is supplying
-    //  MKPolyLine with its drawing path/coordinates.
-
-
-    //  Try MKDirections as demonstrated here
-    //  http://andriyadi.me/provide-routing-on-mapview-using-mkdirections-and-custom-routing/
-
-
-
-    for (NSDictionary *stop in stops.allValues) {
+    for (NSDictionary *stopCoords in coordinateArray) {
 
         //  For first obj in .allValues, just create a 'fromStop' from the stored lat/long
         //  values. For the rest, create a 'toValue,'
 
-        NSUInteger stopIndex = [stops.allValues indexOfObject:stop];
-        float latitude = [[stop objectForKey:klatKey]floatValue];
-        float longitude = [[stop objectForKey:klongKey]floatValue];
+        float latitude = [[stopCoords objectForKey:klatKey]floatValue];
+        float longitude = [[stopCoords objectForKey:klongKey]floatValue];
         CLLocationCoordinate2D  coordinate = CLLocationCoordinate2DMake(latitude, longitude);
 
         MKPlacemark *placeMark = [[MKPlacemark alloc]initWithCoordinate:coordinate addressDictionary:nil];
@@ -136,17 +126,25 @@
 
 
 
-
-        if (stop != firstStop
-            && stopIndex == 1) {
-
-
-
-
             
 
-            //  Make call to get directions taking you from 'fromItem' to 'mapItem' here.
+
+        int limitIndex = 8;
+
+        if (fromItem && [coordinateArray indexOfObject:stopCoords] < limitIndex) {
+
+            /*  
+                http://stackoverflow.com/a/36272430 confirms what I saw elsewhere, which is that
+                50 requests in the space of a minute seems to be a limit imposed by Apple's server for
+                generating directions responses.
+
+                Answer said that they use recursive block in their code to handle the limit on requests.
+                Will investigate viability. 
+             */
             [self findDirectionsFrom:fromItem to:mapItem];
+        }
+        else if ([coordinateArray indexOfObject:stopCoords] >= limitIndex) {
+            NSLog(@"missed stop == %@", stopCoords);
         }
         fromItem = mapItem;
     }
@@ -173,7 +171,7 @@
         else {
 
             MKRoute *route = [response.routes firstObject];
-            [_busMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
+            [weakSelf.busMapView addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
         }
     }];
 }
@@ -186,7 +184,7 @@
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
     MKPolylineView *polylineView = [[MKPolylineView alloc] initWithPolyline:overlay];
     polylineView.strokeColor = [UIColor blueColor];
-    polylineView.lineWidth = 7.0f;
+    polylineView.lineWidth = 9.5f;
 
     return polylineView;
 }
@@ -260,8 +258,6 @@
 
 }
 
-    //  The unwind segue for returning to the Root ViewController from the Detail View.
-
 
 -(IBAction)unwindBack:(UIStoryboardSegue *)sender
 {
@@ -283,8 +279,6 @@
  qualifiedName:(NSString *)qName
     attributes:(NSDictionary<NSString *,NSString *> *)attributeDict {
 
-    NSLog(@"-didStartElement, elementName == %@", elementName);
-
     if ([elementName isEqualToString:kstopElementName]) {
         elementIsStopName = YES;
     }
@@ -299,7 +293,6 @@
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 
-    NSLog(@"found characters, %@", string);
 
     if (elementIsStopName) {
         stopName = [stopName isEqualToString:@""] ? string : [XmlHandler appendNameComponent:string toName:stopName];
@@ -317,9 +310,7 @@
             key = klongKey;
         }
         stopCoordinates = [XmlHandler dictionary:stopCoordinates addObject:string forKey:key];
-        NSLog(@"stopCoordinates == %@", stopCoordinates);
     }
-    NSLog(@"stopName == %@", stopName);
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
@@ -331,13 +322,6 @@
     else if (elementIsLong) {
 
         elementIsLong = !elementIsLong;
-
-
-
-
-        //  Call instead a function that will place 'newBusStop' in an array
-
-
         NSDictionary *newBusStop = [NSDictionary dictionaryWithObject:stopCoordinates forKey:stopName];
 
         if (busStops.count < 1 || busStops == nil) {
@@ -348,12 +332,13 @@
         }
         else if (busStops.count >= 1) {
 
+            NSMutableArray *mutableStops = busStops.mutableCopy;
 
             for (NSDictionary *storedStop in busStops) {
 
 
-                NSString *storedStopName = [storedStop objectForKey:stopName];
-                NSDictionary *storedCoordinates = [storedStop objectForKey:storedStopName];\
+                NSString *storedStopName =[storedStop allKeys].firstObject;
+                NSDictionary *storedCoordinates = [storedStop objectForKey:storedStopName];
 
 
                 /*  
@@ -372,27 +357,33 @@
                 float storedAbsolute = fabsf(storedLongitude);
                 float newAbsolute = fabsf(newLongitude);
 
-                if (newAbsolute < storedAbsolute) {
+                //  Print absolute values
+
+
+                if (newLongitude > storedLongitude) {
+
+                    NSUInteger index = [mutableStops indexOfObject:storedStop];
+                    [mutableStops insertObject:newBusStop atIndex:index];
+                    NSLog(@"stop checked has greater long absolute. Inserted new stop mutablestops ==  %@",
+                                                                                                mutableStops);
+
+                    break;
+                }
+                else if (storedStop == busStops.lastObject) {
+
+                    [mutableStops addObject:newBusStop];
+                    NSLog(@"new stop has greatest abs. long value. mutableStops now == %@", mutableStops);
+
+
+
+
 
 
                 }
-
-
-
             }
 
-
+            busStops = [NSArray arrayWithArray:mutableStops];
         }
-
-
-
-
-
-
-        busStops = [XmlHandler dictionary:busStops addObject:stopCoordinates forKey:stopName];
-
-
-
 
 
         NSLog(@"busStops == %@", busStops);
@@ -424,7 +415,6 @@
         MKCoordinateRegion adjustedRegion = [self.busMapView regionThatFits:viewRegion];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [_busMapView addAnnotation:stopPoint];
             [self.busMapView setRegion:adjustedRegion animated:YES];
         });
 
@@ -436,7 +426,6 @@
     }
 
 
-    NSLog(@"-didEndElement elementName == %@", elementName);
 }
 
 @end
