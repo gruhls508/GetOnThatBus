@@ -7,13 +7,14 @@
 //
 
 #import "AppDelegate.h"
+@import GoogleMaps;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 
-    //
+    [GMSServices provideAPIKey:@"AIzaSyAfSqFTq4xOXDi_CHNxx0oeoY314EP18KM"];
     return YES;
 }
 							

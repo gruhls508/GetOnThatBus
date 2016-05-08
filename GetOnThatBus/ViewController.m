@@ -12,14 +12,13 @@
 
 #import <MapKit/MapKit.h>
 #import "Constants.h"
+@import GoogleMaps;
 
 
 @interface ViewController ()<MKMapViewDelegate, CLLocationManagerDelegate, NSXMLParserDelegate>
-//@property NSArray *busStops;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 
-@property (weak, nonatomic) IBOutlet MKMapView *busMapView;
 @property MKPointAnnotation *busStopAnnotation;
 
 @property NSString *titleString;
@@ -41,6 +40,7 @@
 
     float latitudeSum;
     float longitudeSum;
+    GMSMapView *mapView_;
 }
 
 
@@ -161,7 +161,7 @@
     region.center = centerCoordinate;
     region.span = coordinateSpan;
 
-    [self.busMapView setRegion:region animated:YES];
+//    [self.busMapView setRegion:region animated:YES];
 
 
 }
@@ -283,21 +283,30 @@
         _latitudeMean = latitudeSum / numberOfStops;
         _longitudeMean = longitudeSum / numberOfStops;
 
-
         CLLocationCoordinate2D zoomLocation;
         zoomLocation.latitude = self.latitudeMean;
         zoomLocation.longitude = self.longitudeMean;
-        MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 30000, 25000);
-        MKCoordinateRegion adjustedRegion = [self.busMapView regionThatFits:viewRegion];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_busMapView addAnnotation:stopPoint];
-            [self.busMapView setRegion:adjustedRegion animated:YES];
+
+            //  ***Google Maps***
+            //  Create instance of GMSCameraPosition using the self.latitudeMean, self.longitudeMean
+
+            static dispatch_once_t once;
+            dispatch_once(&once, ^{
+
+                GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:self.latitudeMean
+                                                                        longitude:self.longitudeMean
+                                                                             zoom:11.28];
+
+                mapView_ = [GMSMapView mapWithFrame:CGRectZero camera:camera];
+                mapView_.myLocationEnabled = YES;
+                self.view = mapView_;
+            });
         });
 
 
         stopName = @"";
-
 
         //  **calculate latitude/longitude sums here
     }
