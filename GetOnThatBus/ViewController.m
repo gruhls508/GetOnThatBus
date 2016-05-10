@@ -112,10 +112,41 @@
 - (void)drawRouteWithStops:(NSDictionary *)stops {
 
 
-    for (NSDictionary *stop in stops.allValues) {
+    //  Create a string that will be passed in to
 
-        
+    NSArray *stopValues = stops.allValues;
+    NSDictionary *firstStop = stopValues.firstObject;
+    NSDictionary *lastStop = stopValues.lastObject;
+    NSMutableString *parameterString;
+
+    for (NSDictionary *stop in stopValues) {
+
+        //  ***Check that these return expected values***
+        NSString *latitude = [stop valueForKey:klatKey];
+        NSString *longitude = [stop valueForKey:klongKey];
+
+
+        if (stop == firstStop) {
+
+            parameterString = [NSString stringWithFormat:@"origin="].mutableCopy;
+        }
+        else if (stop == lastStop) {
+
+
+        }
+        else if (stop != firstStop && stop != lastStop) {
+
+        }
+
     }
+
+    //  Submit request for directions between each pair of stops
+    //  asynchronously
+
+    //  Figure out expected format for 'parameters' and
+
+    NSString *requestString = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/directions/xml?"];
+
 
 }
 
