@@ -116,9 +116,15 @@
 
     NSArray *stopValues = stops.allValues;
     NSDictionary *firstStop = stopValues.firstObject;
-    NSDictionary *lastStop = stopValues.lastObject;
-    NSMutableString *parameterString;
+    NSUInteger firstStopIndex = [stopValues indexOfObject:firstStop];
 
+    NSDictionary *secondStop = [stopValues objectAtIndex:firstStopIndex + 1];
+    NSDictionary *lastStop = stopValues.lastObject;
+    NSString *parameterString;
+
+
+    //  http://stackoverflow.com/a/7542986 has guide for formatting coords
+    //  as params for HTTPS req
     for (NSDictionary *stop in stopValues) {
 
         //  ***Check that these return expected values***
@@ -128,17 +134,34 @@
 
         if (stop == firstStop) {
 
-            parameterString = [NSString stringWithFormat:@"origin="].mutableCopy;
+            parameterString = [NSString stringWithFormat:@"origin=%@,%@&", latitude, longitude];
+
         }
         else if (stop == lastStop) {
 
+            //  Make mutable copy of parameter string and insert formatted destination parameter
+            //  before making mutable string non-mutable again.
+
+            //  Check value of 'firstComponent'
+            NSString *firstComponent = [[parameterString componentsSeparatedByString:@"&"] objectAtIndex:0];
+            NSRange componentRange = [parameterString rangeOfString:firstComponent];
+            NSLog(@"firstComponent == %@ componentRange == %@", firstComponent, NSStringFromRange(componentRange));
 
         }
         else if (stop != firstStop && stop != lastStop) {
 
+            if (stop == secondStop)
+                parameterString = [parameterString stringByAppendingString:[NSString stringWithFormat:@"waypoints=%@,%@",
+                                                                                                    latitude, longitude]];
+            else if (stop != secondStop)
+                parameterString = [parameterString stringByAppendingString:[NSString stringWithFormat:@"|%@,%@",
+                                                                                                    latitude, longitude]];
         }
 
     }
+
+    //  ***APPEND API KEY TO PARAMETER STRING HERE***
+
 
     //  Submit request for directions between each pair of stops
     //  asynchronously
@@ -154,7 +177,8 @@
 
 
 
-//  In this code we created our Map Annotations (pins.) We set them up so that they could show "callouts" that would display the pin's title & subtitle (bus stop name and routes.)
+//  In this code we created our Map Annotations (pins.) We set them up so that they could show "callouts"
+//  that would display the pin's title & subtitle (bus stop name and routes.)
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
@@ -191,10 +215,6 @@
     MKCoordinateRegion region;
     region.center = centerCoordinate;
     region.span = coordinateSpan;
-
-//    [self.busMapView setRegion:region animated:YES];
-
-
 }
 
 
@@ -243,7 +263,6 @@
  qualifiedName:(NSString *)qName
     attributes:(NSDictionary<NSString *,NSString *> *)attributeDict {
 
-    NSLog(@"-didStartElement, elementName == %@", elementName);
 
     if ([elementName isEqualToString:kstopElementName]) {
         elementIsStopName = YES;
@@ -259,7 +278,6 @@
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 
-    NSLog(@"found characters, %@", string);
 
     if (elementIsStopName) {
         stopName = [stopName isEqualToString:@""] ? string : [XmlHandler appendNameComponent:string toName:stopName];
@@ -341,9 +359,6 @@
 
         //  **calculate latitude/longitude sums here
     }
-
-
-    NSLog(@"-didEndElement elementName == %@", elementName);
 }
 
 @end
