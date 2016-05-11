@@ -143,9 +143,24 @@
             //  before making mutable string non-mutable again.
 
             //  Check value of 'firstComponent'
+
+
+
+
+
+            //  ****Set -componentsSeparatedByString to NSArray var, make mutable,
+            //  INSERT "destination=%@,%@", latitude, longitude] AFTER FIRST OBJECT (origin) IN THAT ARRAY****
+
             NSString *firstComponent = [[parameterString componentsSeparatedByString:@"&"] objectAtIndex:0];
             NSRange componentRange = [parameterString rangeOfString:firstComponent];
             NSLog(@"firstComponent == %@ componentRange == %@", firstComponent, NSStringFromRange(componentRange));
+
+
+
+
+
+
+
 
         }
         else if (stop != firstStop && stop != lastStop) {
