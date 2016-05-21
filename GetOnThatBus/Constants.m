@@ -10,6 +10,7 @@
 
 @implementation Constants
 
+NSString *const kdirectionsApiKey = @"AIzaSyBfzusOqYZGnemEqKeNld3HJMVBxKZQClo";
 NSString *const kstopElementName = @"stpnm";
 NSString *const klatKey = @"lat";
 NSString *const klongKey = @"lon";

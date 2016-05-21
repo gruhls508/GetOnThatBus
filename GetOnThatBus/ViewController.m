@@ -124,6 +124,10 @@
     NSString *finalParameters;
 
 
+    int waypoints = 0;
+
+
+
     //  http://stackoverflow.com/a/7542986 has guide for formatting coords
     //  as params for HTTPS req
     for (NSDictionary *stop in stopValues) {
@@ -136,7 +140,6 @@
         if (stop == firstStop) {
 
             parameterString = [NSString stringWithFormat:@"origin=%@,%@&", latitude, longitude];
-
         }
         else if (stop == lastStop) {
 
@@ -156,12 +159,15 @@
 
 
             finalParameters = [stringComponents componentsJoinedByString:@"&"];
-            NSLog(@"finalParameters == %@", finalParameters);
+//            NSLog(@"finalParameters == %@", finalParameters);
 
 
 
         }
-        else if (stop != firstStop && stop != lastStop) {
+
+
+
+        else if (stop != firstStop && stop != lastStop && waypoints < 23) {
 
             if (stop == secondStop)
                 parameterString = [parameterString stringByAppendingString:[NSString stringWithFormat:@"waypoints=%@,%@",
@@ -169,20 +175,21 @@
             else if (stop != secondStop)
                 parameterString = [parameterString stringByAppendingString:[NSString stringWithFormat:@"|%@,%@",
                                                                                                     latitude, longitude]];
+
+            waypoints ++;
         }
 
+
+
+
     }
-
-    //  ***APPEND API KEY TO PARAMETER STRING HERE***
-
-
-    //  Submit request for directions between each pair of stops
-    //  asynchronously
-
-    //  Figure out expected format for 'parameters' and
-
     NSString *requestString = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/directions/xml?"];
+    requestString = [requestString stringByAppendingString:finalParameters];
 
+    //  Log requestString, test it with Paw (GET, then POST)
+    requestString = [requestString stringByAppendingString:[NSString stringWithFormat:@"&key=%@", kdirectionsApiKey]];
+
+    NSLog(@"requestString == %@", requestString);
 
 }
 
