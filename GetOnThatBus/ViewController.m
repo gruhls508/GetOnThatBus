@@ -121,6 +121,7 @@
     NSDictionary *secondStop = [stopValues objectAtIndex:firstStopIndex + 1];
     NSDictionary *lastStop = stopValues.lastObject;
     NSString *parameterString;
+    NSString *finalParameters;
 
 
     //  http://stackoverflow.com/a/7542986 has guide for formatting coords
@@ -139,26 +140,23 @@
         }
         else if (stop == lastStop) {
 
-            //  Make mutable copy of parameter string and insert formatted destination parameter
-            //  before making mutable string non-mutable again.
-
-            //  Check value of 'firstComponent'
-
-
-
-
 
             //  ****Set -componentsSeparatedByString to NSArray var, make mutable,
             //  INSERT "destination=%@,%@", latitude, longitude] AFTER FIRST OBJECT (origin) IN THAT ARRAY****
 
-            NSString *firstComponent = [[parameterString componentsSeparatedByString:@"&"] objectAtIndex:0];
-            NSRange componentRange = [parameterString rangeOfString:firstComponent];
-            NSLog(@"firstComponent == %@ componentRange == %@", firstComponent, NSStringFromRange(componentRange));
+
+
+            NSMutableArray *stringComponents = [parameterString componentsSeparatedByString:@"&"].mutableCopy;
+            NSString *firstObject = stringComponents.firstObject;
+
+            parameterString = [NSString stringWithFormat:@"destination=%@,%@", latitude, longitude];
+
+            [stringComponents insertObject:parameterString atIndex:[stringComponents indexOfObject:firstObject] + 1];
 
 
 
-
-
+            finalParameters = [stringComponents componentsJoinedByString:@"&"];
+            NSLog(@"finalParameters == %@", finalParameters);
 
 
 
